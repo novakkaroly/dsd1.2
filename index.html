@@ -1,312 +1,542 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSD Gyakorlóoldal – Deutsches Sprachdiplom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .hero-bg { background: linear-gradient(135deg, #003087 0%, #0052CC 100%); }
-        .flag-de { background: linear-gradient(to right, #000000 33%, #FF0000 33% 66%, #FFCC00 66%); }
-        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-        .nav-link { position: relative; }
-        .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #FFCC00; transition: width 0.3s; }
-        .nav-link:hover:after { width: 100%; }
-        .progress-bar { transition: width 1s ease-in-out; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSD Gyakorlóoldal – interaktív</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --blue-1:#003087;
+      --blue-2:#0052cc;
+      --blue-3:#dbeafe;
+      --yellow:#ffcc00;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --ok:#16a34a;
+      --warn:#d97706;
+      --danger:#dc2626;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    .hero-bg { background: linear-gradient(135deg, var(--blue-1) 0%, var(--blue-2) 100%); }
+    .flag-de { background: linear-gradient(to right, #000 33%, #ff0000 33% 66%, #ffcc00 66%); }
+    .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 18px 35px -14px rgba(0,0,0,.22); }
+    .nav-link { position: relative; }
+    .nav-link:after { content:''; position:absolute; width:0; height:2px; left:0; bottom:-4px; background:#ffcc00; transition:width .25s ease; }
+    .nav-link:hover:after { width:100%; }
+    .pill { border-radius:9999px; }
+    .badge { display:inline-flex; align-items:center; gap:.45rem; border-radius:9999px; padding:.35rem .75rem; font-size:.78rem; font-weight:700; }
+    .option-btn { width:100%; text-align:left; border:1px solid #dbe2ea; background:white; border-radius:1rem; padding:1rem; transition:all .2s ease; }
+    .option-btn:hover { border-color:#93c5fd; background:#f8fbff; }
+    .option-btn.correct { border-color:#22c55e; background:#ecfdf5; }
+    .option-btn.incorrect { border-color:#ef4444; background:#fef2f2; }
+    .progress-wrap { background:#e5e7eb; border-radius:9999px; overflow:hidden; }
+    .progress-fill { background:linear-gradient(90deg, #2563eb, #60a5fa); height:10px; width:0; transition: width .35s ease; }
+    .tab-btn.active { background:#003087; color:white; }
+    .mini-card { background:white; border:1px solid #e5e7eb; border-radius:1.25rem; }
+    .fade-in { animation:fade .35s ease; }
+    @keyframes fade { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.2rem; line-height:1.15; }
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-
-    <!-- HEADER -->
-    <header class="hero-bg text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl flag-de flex items-center justify-center text-4xl shadow-inner">🇩🇪</div>
-                <div>
-                    <h1 class="text-4xl font-bold tracking-tight">DSD Gyakorló</h1>
-                    <p class="text-blue-200 text-lg">Deutsches Sprachdiplom – Interaktív felkészülés</p>
-                </div>
-            </div>
-            
-            <div class="flex gap-8 mt-6 md:mt-0 text-lg">
-                <a href="#info" onclick="switchLang()" class="nav-link font-medium flex items-center gap-2 hover:text-yellow-300">
-                    <i class="fas fa-info-circle"></i> 
-                    <span id="nav-info">Információk / Informationen</span>
-                </a>
-                <a href="#practice" onclick="switchLang()" class="nav-link font-medium flex items-center gap-2 hover:text-yellow-300">
-                    <i class="fas fa-pencil-alt"></i> 
-                    <span id="nav-practice">Gyakorlás / Üben</span>
-                </a>
-                <a href="#models" onclick="switchLang()" class="nav-link font-medium flex items-center gap-2 hover:text-yellow-300">
-                    <i class="fas fa-file-alt"></i> 
-                    <span id="nav-models">Modellsätze</span>
-                </a>
-            </div>
-
-            <div class="flex items-center gap-3 mt-6 md:mt-0">
-                <button onclick="toggleLanguage()" id="lang-btn"
-                        class="px-5 py-2.5 bg-white text-blue-900 rounded-2xl font-semibold flex items-center gap-2 hover:bg-yellow-300 transition-colors">
-                    <span id="current-lang">HU / DE</span>
-                </button>
-            </div>
+<body>
+  <header class="hero-bg text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl flag-de flex items-center justify-center text-4xl shadow-inner">🇩🇪</div>
+        <div>
+          <h1 class="text-4xl font-extrabold tracking-tight">DSD Gyakorló</h1>
+          <p id="site-subtitle" class="text-blue-100 text-lg">Interaktív felkészülés magyarul és németül</p>
         </div>
-    </header>
+      </div>
 
-    <div class="max-w-7xl mx-auto px-6 py-8">
+      <nav class="flex flex-wrap justify-center gap-6 text-base lg:text-lg">
+        <a href="#info" class="nav-link font-medium hover:text-yellow-300"><i class="fas fa-info-circle mr-2"></i><span id="nav-info">Információk</span></a>
+        <a href="#practice" class="nav-link font-medium hover:text-yellow-300"><i class="fas fa-pencil-alt mr-2"></i><span id="nav-practice">Gyakorlás</span></a>
+        <a href="#reading-zone" class="nav-link font-medium hover:text-yellow-300"><i class="fas fa-book-open mr-2"></i><span id="nav-reading">Olvasás</span></a>
+        <a href="#models" class="nav-link font-medium hover:text-yellow-300"><i class="fas fa-file-alt mr-2"></i><span id="nav-models">Modellsätze</span></a>
+      </nav>
 
-        <!-- HERO -->
-        <div class="hero-bg rounded-3xl text-white p-12 mb-12 relative overflow-hidden">
-            <div class="max-w-xl">
-                <h2 id="hero-title" class="text-5xl font-bold leading-tight mb-6">Készülj fel sikeresen a DSD I vizsgára!</h2>
-                <p id="hero-subtitle" class="text-xl mb-8 text-blue-100">Interaktív gyakorlás magyar és német nyelven. Olvasás, hallásértés, írás és beszédkészség fejlesztése.</p>
-                <div class="flex gap-4">
-                    <a href="#practice" 
-                       class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-blue-950 font-bold text-lg rounded-2xl inline-flex items-center gap-3 transition-all">
-                        <i class="fas fa-play"></i>
-                        <span id="start-btn">Kezdjem a gyakorlást</span>
-                    </a>
-                </div>
-            </div>
-            <div class="absolute -bottom-6 right-8 text-[180px] opacity-10">🇩🇪</div>
-        </div>
-
-        <!-- INFO SECTION -->
-        <section id="info" class="mb-20">
-            <h2 id="info-title" class="text-3xl font-bold mb-8 text-center">Mi az a DSD? / Was ist das DSD?</h2>
-            
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Magyar -->
-                <div class="bg-white p-8 rounded-3xl shadow-sm card-hover">
-                    <h3 class="text-2xl font-semibold mb-4 flex items-center gap-3">
-                        <span class="text-2xl">🇭🇺</span> Magyarul
-                    </h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        A <strong>Deutsches Sprachdiplom (DSD)</strong> a Kultuszminiszterek Konferenciájának (KMK) nyelvvizsgája, amelyet a ZfA szervez. 
-                        A DSD I az A2–B1 szintnek felel meg, és nemzetközi elismerésű bizonyítványt ad.
-                    </p>
-                    <ul class="mt-6 space-y-3 text-sm">
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> Négy készség: Olvasás, Hallásértés, Írás, Beszéd</li>
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> Iskolai környezetben zajlik</li>
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> Magyarországon akkreditált</li>
-                    </ul>
-                </div>
-
-                <!-- Német -->
-                <div class="bg-white p-8 rounded-3xl shadow-sm card-hover">
-                    <h3 class="text-2xl font-semibold mb-4 flex items-center gap-3">
-                        <span class="text-2xl">🇩🇪</span> Auf Deutsch
-                    </h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Das <strong>Deutsche Sprachdiplom (DSD)</strong> ist eine Prüfung der Kultusministerkonferenz (KMK), die von der Zentralstelle für das Auslandsschulwesen (ZfA) durchgeführt wird. 
-                        DSD I entspricht dem Niveau A2–B1 des Gemeinsamen europäischen Referenzrahmens.
-                    </p>
-                    <ul class="mt-6 space-y-3 text-sm">
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> Vier Fertigkeiten: Lesen, Hören, Schreiben, Sprechen</li>
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> Wird an Schulen durchgeführt</li>
-                        <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i> International anerkannt</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIZSGA FELÉPÍTÉSE -->
-        <section class="mb-20">
-            <h2 id="structure-title" class="text-3xl font-bold mb-8 text-center">A DSD I vizsga szerkezete / Aufbau der DSD I Prüfung</h2>
-            
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-3xl p-8 text-center card-hover border border-blue-100">
-                    <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-6">📖</div>
-                    <h4 class="font-bold text-xl mb-2">Leseverstehen</h4>
-                    <p class="text-sm text-gray-500">Olvasásértés / Leseverstehen</p>
-                    <p class="mt-4 text-xs bg-blue-50 py-1 px-4 rounded-2xl inline-block">70 perc</p>
-                </div>
-                <div class="bg-white rounded-3xl p-8 text-center card-hover border border-blue-100">
-                    <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-6">🎧</div>
-                    <h4 class="font-bold text-xl mb-2">Hörverstehen</h4>
-                    <p class="text-sm text-gray-500">Hallásértés / Hörverstehen</p>
-                    <p class="mt-4 text-xs bg-blue-50 py-1 px-4 rounded-2xl inline-block">40 + 10 perc</p>
-                </div>
-                <div class="bg-white rounded-3xl p-8 text-center card-hover border border-blue-100">
-                    <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-6">✍️</div>
-                    <h4 class="font-bold text-xl mb-2">Schriftliche Kommunikation</h4>
-                    <p class="text-sm text-gray-500">Íráskészség</p>
-                </div>
-                <div class="bg-white rounded-3xl p-8 text-center card-hover border border-blue-100">
-                    <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-6">🗣️</div>
-                    <h4 class="font-bold text-xl mb-2">Mündliche Kommunikation</h4>
-                    <p class="text-sm text-gray-500">Beszédkészség</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- INTERAKTÍV GYAKORLÁS -->
-        <section id="practice" class="mb-20">
-            <h2 id="practice-title" class="text-3xl font-bold mb-8 text-center">Interaktív gyakorlás / Interaktives Üben</h2>
-            
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Olvasás -->
-                <div onclick="startReadingPractice()" class="cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-10 card-hover">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="px-4 py-1 text-xs font-bold bg-blue-600 text-white rounded-3xl">Leseverstehen</span>
-                            <h3 class="text-3xl font-bold mt-6 mb-3">Olvasásértés gyakorlás</h3>
-                            <p class="text-gray-600">Rövid és hosszú szövegek megértése, feladatokkal.</p>
-                        </div>
-                        <i class="fas fa-book text-7xl text-blue-200"></i>
-                    </div>
-                    <div class="mt-8 h-2 bg-white rounded-full overflow-hidden">
-                        <div class="progress-bar w-3/4 h-2 bg-blue-600 rounded-full"></div>
-                    </div>
-                </div>
-
-                <!-- Hallásértés -->
-                <div onclick="alert('A modell audiók a hivatalos oldalon érhetők el. Linkeket lentebb találsz.')" 
-                     class="cursor-pointer bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-3xl p-10 card-hover">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="px-4 py-1 text-xs font-bold bg-amber-600 text-white rounded-3xl">Hörverstehen</span>
-                            <h3 class="text-3xl font-bold mt-6 mb-3">Hallásértés gyakorlás</h3>
-                            <p class="text-gray-600">Párbeszédek, bejelentések, interjúk hallgatása.</p>
-                        </div>
-                        <i class="fas fa-headphones text-7xl text-amber-200"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODELLSÄTZE -->
-        <section id="models" class="mb-20">
-            <h2 id="models-title" class="text-3xl font-bold mb-8 text-center">Modellsätze DSD I / Modellfeladatsorok</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Hivatalos mintafeladatsorok a ZfA honlapjáról. PDF-ek és hanganyagok közvetlen letöltése.</p>
-            
-            <div class="bg-white rounded-3xl shadow p-8">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b">
-                            <th class="text-left py-4">Modellsatz</th>
-                            <th class="text-left py-4">PDF</th>
-                            <th class="text-left py-4">Hanganyagok</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm" id="model-table">
-                        <!-- JS-sel töltődik fel -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- TIPPek -->
-        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-3xl p-12">
-            <h2 id="tips-title" class="text-3xl font-bold mb-8 text-center">Tippek a sikeres vizsgához / Tipps für die Prüfung</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <i class="fas fa-clock text-5xl mb-4 text-yellow-300"></i>
-                    <h4 class="font-semibold">Időgazdálkodás</h4>
-                    <p class="text-blue-200 text-sm mt-2">Olvasásnál mindig van átviteli idő – használjuk ki!</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-lightbulb text-5xl mb-4 text-yellow-300"></i>
-                    <h4 class="font-semibold">Szókincs</h4>
-                    <p class="text-blue-200 text-sm mt-2">Figyelj a mindennapi és iskolai témákra (Freizeit, Schule, Umwelt).</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-comments text-5xl mb-4 text-yellow-300"></i>
-                    <h4 class="font-semibold">Beszéd</h4>
-                    <p class="text-blue-200 text-sm mt-2">Gyakorolj monológot és dialógust tükör előtt vagy partnerrel.</p>
-                </div>
-            </div>
-        </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleLanguage()" id="lang-btn" class="px-5 py-2.5 bg-white text-blue-900 rounded-2xl font-semibold hover:bg-yellow-300 transition-colors min-h-[44px]">
+          <span id="current-lang">HU / DE</span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- FOOTER -->
-    <footer class="bg-gray-900 text-white py-12 mt-20">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="text-sm text-gray-400">Ez az oldal oktatási céllal készült. Hivatalos információk és letöltések: 
-                <a href="https://www.auslandsschulwesen.de" target="_blank" class="underline hover:text-yellow-300">auslandsschulwesen.de</a>
-            </p>
-            <p class="text-xs text-gray-500 mt-6">Készítette: Grok • Kétnyelvű DSD gyakorlóoldal</p>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <section class="hero-bg rounded-3xl text-white p-8 md:p-12 mb-12 relative overflow-hidden">
+      <div class="max-w-3xl relative z-10">
+        <div class="badge bg-white/15 text-white mb-5"><i class="fas fa-graduation-cap"></i><span id="hero-badge">DSD I • A2–B1</span></div>
+        <h2 id="hero-title" class="hero-title text-5xl font-extrabold leading-tight mb-5">Készülj fel interaktívan a DSD I vizsgára!</h2>
+        <p id="hero-subtitle" class="text-xl text-blue-100 mb-8 max-w-2xl">Olvasásértés, mini kvízek, pontszámkövetés és hivatalos modellsatz linkek egy oldalon.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#reading-zone" class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-blue-950 font-bold rounded-2xl inline-flex items-center gap-3 min-h-[44px]">
+            <i class="fas fa-play"></i><span id="start-btn">Induljon az olvasási feladat</span>
+          </a>
+          <a href="#models" class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl inline-flex items-center gap-3 min-h-[44px] border border-white/20">
+            <i class="fas fa-download"></i><span id="hero-secondary">Hivatalos modellsatzek</span>
+          </a>
         </div>
-    </footer>
+      </div>
+      <div class="absolute -bottom-8 right-5 text-[170px] opacity-10 select-none">🇩🇪</div>
+    </section>
 
-    <script>
-        // Tailwind script már be van töltve
+    <section id="info" class="mb-16">
+      <h2 id="info-title" class="text-3xl font-bold mb-8 text-center">Mi az a DSD I?</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <article class="bg-white p-8 rounded-3xl shadow-sm card-hover">
+          <h3 class="text-2xl font-semibold mb-4 flex items-center gap-3"><span class="text-2xl">🇭🇺</span> Magyarul</h3>
+          <p class="text-gray-600 leading-relaxed mb-5">A DSD I a Deutsches Sprachdiplom első szintje. A cél a B1 szint elérése, miközben a feladatok az olvasás, hallásértés, írás és beszéd területeit mérik.</p>
+          <ul class="space-y-3 text-sm text-gray-700">
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>Négy készség egy vizsgában.</span></li>
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>14–16 éves tanulók számára is tipikus célvizsga.</span></li>
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>Hivatalos modellfeladatsorokkal jól gyakorolható.</span></li>
+          </ul>
+        </article>
 
-        // Nyelv váltás
-        let currentLang = 'hu';
-        
-        function toggleLanguage() {
-            currentLang = currentLang === 'hu' ? 'de' : 'hu';
-            document.getElementById('current-lang').textContent = currentLang === 'hu' ? 'HU / DE' : 'DE / HU';
-            updateTexts();
+        <article class="bg-white p-8 rounded-3xl shadow-sm card-hover">
+          <h3 class="text-2xl font-semibold mb-4 flex items-center gap-3"><span class="text-2xl">🇩🇪</span> Auf Deutsch</h3>
+          <p class="text-gray-600 leading-relaxed mb-5">Das DSD I richtet sich an Schülerinnen und Schüler, die allgemeinsprachliche Deutschkenntnisse bis B1 nachweisen möchten. Die Prüfung umfasst Lesen, Hören, Schreiben und Sprechen.</p>
+          <ul class="space-y-3 text-sm text-gray-700">
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>Zielniveau: B1.</span></li>
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>Geeignet für die konkrete Prüfungsvorbereitung.</span></li>
+            <li class="flex gap-3"><i class="fas fa-check text-green-500 mt-1"></i><span>Mit offiziellen Modellsätzen der ZfA kombinierbar.</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold mb-8 text-center">Vizsgarészek</h2>
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="mini-card p-7 text-center card-hover">
+          <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-5">📖</div>
+          <h3 class="font-bold text-xl mb-1">Leseverstehen</h3>
+          <p class="text-sm text-gray-500">Olvasásértés</p>
+          <p class="mt-4 inline-block bg-blue-50 text-blue-800 text-xs px-4 py-1 rounded-full">70 perc</p>
+        </div>
+        <div class="mini-card p-7 text-center card-hover">
+          <div class="w-16 h-16 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-3xl mb-5">🎧</div>
+          <h3 class="font-bold text-xl mb-1">Hörverstehen</h3>
+          <p class="text-sm text-gray-500">Hallásértés</p>
+          <p class="mt-4 inline-block bg-amber-50 text-amber-800 text-xs px-4 py-1 rounded-full">40 + 10 perc</p>
+        </div>
+        <div class="mini-card p-7 text-center card-hover">
+          <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl mb-5">✍️</div>
+          <h3 class="font-bold text-xl mb-1">Schriftliche Kommunikation</h3>
+          <p class="text-sm text-gray-500">Íráskészség</p>
+          <p class="mt-4 inline-block bg-emerald-50 text-emerald-800 text-xs px-4 py-1 rounded-full">strukturált szöveg</p>
+        </div>
+        <div class="mini-card p-7 text-center card-hover">
+          <div class="w-16 h-16 mx-auto bg-purple-100 rounded-2xl flex items-center justify-center text-3xl mb-5">🗣️</div>
+          <h3 class="font-bold text-xl mb-1">Mündliche Kommunikation</h3>
+          <p class="text-sm text-gray-500">Beszédkészség</p>
+          <p class="mt-4 inline-block bg-purple-50 text-purple-800 text-xs px-4 py-1 rounded-full">bemutatás + párbeszéd</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="practice" class="mb-16">
+      <h2 class="text-3xl font-bold mb-8 text-center">Interaktív gyakorlás</h2>
+      <div class="grid lg:grid-cols-3 gap-6">
+        <article class="mini-card p-8 card-hover lg:col-span-2">
+          <div class="flex items-center justify-between gap-4 mb-5 flex-wrap">
+            <div>
+              <span class="badge bg-blue-600 text-white mb-3"><i class="fas fa-bolt"></i> Mini kvíz</span>
+              <h3 class="text-2xl font-bold">DSD gyorsismétlés</h3>
+              <p class="text-gray-600 mt-2">Három rövid kérdés a vizsga felépítéséről és a DSD I sajátosságairól.</p>
+            </div>
+            <button id="reset-quiz" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 font-semibold min-h-[44px]">Újraindítás</button>
+          </div>
+          <div class="progress-wrap mb-3"><div id="quiz-progress" class="progress-fill"></div></div>
+          <div class="flex justify-between text-sm text-gray-500 mb-5"><span id="quiz-counter">1 / 3 kérdés</span><span id="quiz-score-label">Pontszám: 0</span></div>
+          <div id="quiz-box" class="fade-in"></div>
+        </article>
+
+        <aside class="mini-card p-8 card-hover">
+          <span class="badge bg-amber-100 text-amber-800 mb-4"><i class="fas fa-star"></i> Tanulói statisztika</span>
+          <h3 class="text-2xl font-bold mb-5">Mai állapot</h3>
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between mb-2 text-sm"><span>Kitöltött kvíz</span><span id="stat-quiz">0%</span></div>
+              <div class="progress-wrap"><div id="stat-quiz-bar" class="progress-fill"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2 text-sm"><span>Olvasási feladat</span><span id="stat-reading">0%</span></div>
+              <div class="progress-wrap"><div id="stat-reading-bar" class="progress-fill"></div></div>
+            </div>
+            <div class="rounded-2xl bg-slate-50 p-5 border border-slate-200">
+              <p class="font-semibold mb-2">Javaslat</p>
+              <p id="study-tip" class="text-sm text-gray-600">Kezdd a mini kvízzel, majd oldd meg az olvasási feladatot.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="reading-zone" class="mb-16">
+      <h2 class="text-3xl font-bold mb-8 text-center">Olvasás feladat nézet</h2>
+      <div class="grid lg:grid-cols-2 gap-8">
+        <article class="bg-white rounded-3xl shadow-sm p-8">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+            <span class="badge bg-emerald-100 text-emerald-800"><i class="fas fa-book-reader"></i> Leseverstehen</span>
+            <div class="flex gap-2 flex-wrap">
+              <button class="tab-btn active px-4 py-2 rounded-xl bg-slate-100 min-h-[44px]" onclick="switchReadingTab('text')">Szöveg</button>
+              <button class="tab-btn px-4 py-2 rounded-xl bg-slate-100 min-h-[44px]" onclick="switchReadingTab('tasks')">Feladatok</button>
+              <button class="tab-btn px-4 py-2 rounded-xl bg-slate-100 min-h-[44px]" onclick="switchReadingTab('feedback')">Visszajelzés</button>
+            </div>
+          </div>
+
+          <div id="reading-text" class="reading-panel fade-in">
+            <h3 class="text-2xl font-bold mb-4">Ein neues Hobby</h3>
+            <p class="text-gray-700 leading-7 mb-4">Lena ist 15 Jahre alt und wohnt in einer kleinen Stadt. Nach der Schule verbringt sie viel Zeit zu Hause, aber seit einem Monat hat sie ein neues Hobby: Sie fotografiert gern in der Natur. Am Anfang hat sie nur mit ihrem Handy Bilder gemacht. Später hat sie von ihrer Tante eine einfache Kamera bekommen.</p>
+            <p class="text-gray-700 leading-7 mb-4">Jetzt geht Lena zweimal pro Woche in den Park oder an den kleinen See in der Nähe. Dort fotografiert sie Blumen, Vögel und den Himmel. Besonders interessant findet sie das Licht am Abend. Ihre besten Fotos zeigt sie ihrer Klasse. Ihre Freunde finden die Bilder kreativ und bunt.</p>
+            <p class="text-gray-700 leading-7">Lena möchte später vielleicht an einem Fotowettbewerb teilnehmen. Vorher will sie aber noch mehr üben und im Internet Tipps für bessere Naturfotos suchen.</p>
+          </div>
+
+          <div id="reading-tasks" class="reading-panel hidden fade-in">
+            <h3 class="text-2xl font-bold mb-5">Válaszolj a kérdésekre</h3>
+            <div class="space-y-5">
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                <p class="font-semibold mb-3">1. Wie alt ist Lena?</p>
+                <select id="r1" class="w-full rounded-xl border border-slate-300 px-4 py-3 min-h-[44px]">
+                  <option value="">Válassz...</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                </select>
+              </div>
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                <p class="font-semibold mb-3">2. Was fotografiert sie besonders gern?</p>
+                <select id="r2" class="w-full rounded-xl border border-slate-300 px-4 py-3 min-h-[44px]">
+                  <option value="">Válassz...</option>
+                  <option value="autos">Autos und Häuser</option>
+                  <option value="natur">Blumen, Vögel und den Himmel</option>
+                  <option value="sport">Sportveranstaltungen</option>
+                </select>
+              </div>
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                <p class="font-semibold mb-3">3. Was möchte Lena später vielleicht machen?</p>
+                <select id="r3" class="w-full rounded-xl border border-slate-300 px-4 py-3 min-h-[44px]">
+                  <option value="">Válassz...</option>
+                  <option value="reise">Eine Reise nach Berlin</option>
+                  <option value="wettbewerb">An einem Fotowettbewerb teilnehmen</option>
+                  <option value="schule">Die Schule wechseln</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <button onclick="checkReading()" class="px-6 py-3 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-semibold min-h-[44px]">Ellenőrzés</button>
+              <button onclick="resetReading()" class="px-6 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 font-semibold min-h-[44px]">Újrakezdés</button>
+            </div>
+          </div>
+
+          <div id="reading-feedback" class="reading-panel hidden fade-in">
+            <h3 class="text-2xl font-bold mb-4">Eredmény</h3>
+            <div id="reading-result" class="rounded-2xl bg-slate-50 border border-slate-200 p-5 text-gray-600">Töltsd ki a feladatot, majd kattints az ellenőrzésre.</div>
+          </div>
+        </article>
+
+        <aside class="bg-white rounded-3xl shadow-sm p-8">
+          <span class="badge bg-blue-100 text-blue-800 mb-4"><i class="fas fa-lightbulb"></i> Stratégiák</span>
+          <h3 class="text-2xl font-bold mb-5">Olvasási tippek</h3>
+          <div class="space-y-4 text-gray-700">
+            <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100">
+              <p class="font-semibold mb-1">1. Először a kulcsszavak</p>
+              <p class="text-sm">Olvasd át gyorsan a kérdéseket, és keresd meg a neveket, számokat, helyeket.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100">
+              <p class="font-semibold mb-1">2. Ne fordíts mindent</p>
+              <p class="text-sm">A DSD olvasásnál gyakran elég a fő gondolat és a kulcsinformáció felismerése.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+              <p class="font-semibold mb-1">3. Jelöld a bizonyítékot</p>
+              <p class="text-sm">Minden válaszhoz találd meg a szöveg megfelelő mondatát vagy részletét.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 rounded-3xl hero-bg text-white p-6">
+            <h4 class="font-bold text-xl mb-2">Mini cél</h4>
+            <p class="text-blue-100 text-sm mb-4">Érd el legalább a 2/3-as eredményt az olvasási feladatban.</p>
+            <div class="progress-wrap bg-white/20"><div id="reading-goal-bar" class="progress-fill" style="background:linear-gradient(90deg,#facc15,#fde68a); width:0%"></div></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="models" class="mb-16">
+      <h2 class="text-3xl font-bold mb-8 text-center">Hivatalos modellsatzek</h2>
+      <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">A hivatalos DSD I modellfeladatsorok a ZfA oldalán érhetők el, és kifejezetten vizsgafelkészítésre használhatók.</p>
+      <div class="bg-white rounded-3xl shadow-sm p-8 overflow-x-auto">
+        <table class="w-full min-w-[680px]">
+          <thead>
+            <tr class="border-b text-left text-sm text-gray-500">
+              <th class="py-4">Modellsatz</th>
+              <th class="py-4">PDF</th>
+              <th class="py-4">Megjegyzés</th>
+            </tr>
+          </thead>
+          <tbody id="model-table" class="text-sm"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-16">
+      <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-3xl p-8 md:p-12">
+        <h2 class="text-3xl font-bold mb-8 text-center">Vizsgatippek</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <i class="fas fa-clock text-5xl mb-4 text-yellow-300"></i>
+            <h3 class="font-semibold text-xl">Időgazdálkodás</h3>
+            <p class="text-blue-200 text-sm mt-2">Először a könnyebb feladatokat vedd célba, és hagyj időt az ellenőrzésre.</p>
+          </div>
+          <div class="text-center">
+            <i class="fas fa-lightbulb text-5xl mb-4 text-yellow-300"></i>
+            <h3 class="font-semibold text-xl">Szókincs</h3>
+            <p class="text-blue-200 text-sm mt-2">A Freizeit, Schule, Medien, Umwelt és Alltag témakörök különösen hasznosak.</p>
+          </div>
+          <div class="text-center">
+            <i class="fas fa-comments text-5xl mb-4 text-yellow-300"></i>
+            <h3 class="font-semibold text-xl">Beszéd</h3>
+            <p class="text-blue-200 text-sm mt-2">Gyakorolj rövid bemutatást és egyszerű véleménykifejtést időre.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-white py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-sm text-gray-400">Ez az oldal oktatási céllal készült. Hivatalos információk és letöltések:
+        <a href="https://www.auslandsschulwesen.de/DE/Deutsch-lernen/DSD/DSD-I/dsd-i_modellsaetze.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-yellow-300">auslandsschulwesen.de</a>
+      </p>
+      <p class="text-xs text-gray-500 mt-6">Készítette: Károly Novák • Interaktív DSD gyakorlóoldal</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentLang = 'hu';
+
+    const translations = {
+      'site-subtitle': { hu: 'Interaktív felkészülés magyarul és németül', de: 'Interaktive Vorbereitung auf Ungarisch und Deutsch' },
+      'nav-info': { hu: 'Információk', de: 'Informationen' },
+      'nav-practice': { hu: 'Gyakorlás', de: 'Üben' },
+      'nav-reading': { hu: 'Olvasás', de: 'Lesen' },
+      'nav-models': { hu: 'Modellsätze', de: 'Modellsätze' },
+      'hero-badge': { hu: 'DSD I • A2–B1', de: 'DSD I • A2–B1' },
+      'hero-title': { hu: 'Készülj fel interaktívan a DSD I vizsgára!', de: 'Bereite dich interaktiv auf die DSD I Prüfung vor!' },
+      'hero-subtitle': { hu: 'Olvasásértés, mini kvízek, pontszámkövetés és hivatalos modellsatz linkek egy oldalon.', de: 'Leseverstehen, Mini-Quiz, Punktestand und offizielle Modellsatz-Links auf einer Seite.' },
+      'start-btn': { hu: 'Induljon az olvasási feladat', de: 'Zur Leseaufgabe' },
+      'hero-secondary': { hu: 'Hivatalos modellsatzek', de: 'Offizielle Modellsätze' },
+      'info-title': { hu: 'Mi az a DSD I?', de: 'Was ist das DSD I?' },
+      'current-lang': { hu: 'HU / DE', de: 'DE / HU' }
+    };
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'hu' ? 'de' : 'hu';
+      Object.keys(translations).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && translations[id][currentLang]) el.textContent = translations[id][currentLang];
+      });
+    }
+
+    const quizData = [
+      {
+        question: 'Mi a DSD I célzott szintje?',
+        answers: ['A1', 'A2–B1 / főként B1 cél', 'C1'],
+        correct: 1,
+        explain: 'A DSD I a B1 szint elérésére irányul, az A2–B1 sávban értelmezhető.'
+      },
+      {
+        question: 'Melyik NEM tartozik a négy fő vizsgarész közé?',
+        answers: ['Leseverstehen', 'Hörverstehen', 'Programozás'],
+        correct: 2,
+        explain: 'A programozás természetesen nem vizsgarész a DSD I-ben.'
+      },
+      {
+        question: 'Mire jók a modellsatzek?',
+        answers: ['Konkrét vizsgafelkészítésre', 'Csak tanári adminisztrációra', 'Csak hanganyag nélkül használhatók'],
+        correct: 0,
+        explain: 'A hivatalos modellfeladatsorok vizsgafelkészítésre használhatók.'
+      }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizAnswered = false;
+
+    function renderQuiz() {
+      const box = document.getElementById('quiz-box');
+      const item = quizData[quizIndex];
+      document.getElementById('quiz-counter').textContent = `${quizIndex + 1} / ${quizData.length} kérdés`;
+      document.getElementById('quiz-score-label').textContent = `Pontszám: ${quizScore}`;
+      document.getElementById('quiz-progress').style.width = `${(quizIndex / quizData.length) * 100}%`;
+      box.innerHTML = `
+        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-6">
+          <p class="text-xl font-bold mb-5">${item.question}</p>
+          <div class="space-y-3">
+            ${item.answers.map((ans, i) => `<button class="option-btn" onclick="answerQuiz(${i})">${ans}</button>`).join('')}
+          </div>
+          <div id="quiz-feedback" class="mt-5 text-sm text-gray-600"></div>
+        </div>
+      `;
+      quizAnswered = false;
+      updateStats();
+    }
+
+    function answerQuiz(index) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const item = quizData[quizIndex];
+      const buttons = [...document.querySelectorAll('.option-btn')];
+      buttons.forEach((btn, i) => {
+        if (i === item.correct) btn.classList.add('correct');
+        if (i === index && i !== item.correct) btn.classList.add('incorrect');
+        btn.disabled = true;
+      });
+      const ok = index === item.correct;
+      if (ok) quizScore++;
+      document.getElementById('quiz-score-label').textContent = `Pontszám: ${quizScore}`;
+      document.getElementById('quiz-feedback').innerHTML = `
+        <div class="rounded-xl ${ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'} p-4">
+          <p class="font-semibold mb-1">${ok ? 'Helyes válasz!' : 'Most nem ez a helyes válasz.'}</p>
+          <p>${item.explain}</p>
+        </div>
+        <button onclick="nextQuiz()" class="mt-4 px-5 py-3 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-semibold min-h-[44px]">${quizIndex < quizData.length - 1 ? 'Következő kérdés' : 'Eredmény megtekintése'}</button>
+      `;
+      document.getElementById('quiz-progress').style.width = `${((quizIndex + 1) / quizData.length) * 100}%`;
+      updateStats();
+    }
+
+    function nextQuiz() {
+      if (quizIndex < quizData.length - 1) {
+        quizIndex++;
+        renderQuiz();
+      } else {
+        document.getElementById('quiz-box').innerHTML = `
+          <div class="rounded-2xl bg-blue-50 border border-blue-200 p-6">
+            <h4 class="text-2xl font-bold mb-3">Kész!</h4>
+            <p class="text-gray-700 mb-2">A kvíz eredményed: <strong>${quizScore}/${quizData.length}</strong></p>
+            <p class="text-gray-600 mb-5">${quizScore === quizData.length ? 'Szuper, minden válasz helyes.' : quizScore >= 2 ? 'Jó alapod van, jöhet az olvasási feladat.' : 'Érdemes újra átnézni az információs részt is.'}</p>
+            <button onclick="resetQuiz()" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-100 border border-slate-200 font-semibold min-h-[44px]">Kvíz újraindítása</button>
+          </div>
+        `;
+        updateStats();
+      }
+    }
+
+    function resetQuiz() {
+      quizIndex = 0;
+      quizScore = 0;
+      renderQuiz();
+    }
+
+    document.addEventListener('click', function(e){
+      if (e.target && e.target.id === 'reset-quiz') resetQuiz();
+    });
+
+    const modelSets = [
+      { nr: 1, pdf: 'https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_1/download_modellsatz.pdf?__blob=publicationFile&v=3', note: 'Hivatalos mintafeladatsor' },
+      { nr: 2, pdf: 'https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_2/download_modellsatz.pdf?__blob=publicationFile&v=2', note: 'Olvasás, hallásértés és további részek' },
+      { nr: 3, pdf: 'https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_3/download_modellsatz.pdf?__blob=publicationFile&v=2', note: 'Jó gyakorló sor vizsgatempóhoz' },
+      { nr: 5, pdf: 'https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_5/download_modellsatz.pdf?__blob=publicationFile', note: 'További hivatalos modell' },
+      { nr: 6, pdf: 'https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_6/download_modellsatz.pdf?__blob=publicationFile&v=2', note: 'Hasznos plusz gyakorlás' }
+    ];
+
+    function populateModels() {
+      const tbody = document.getElementById('model-table');
+      tbody.innerHTML = '';
+      modelSets.forEach(set => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b hover:bg-slate-50';
+        tr.innerHTML = `
+          <td class="py-5 font-medium">Modellsatz Nr. ${set.nr}</td>
+          <td class="py-5"><a href="${set.pdf}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 font-semibold"><i class="fas fa-download"></i> PDF megnyitása</a></td>
+          <td class="py-5 text-gray-500">${set.note}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function switchReadingTab(tab) {
+      document.querySelectorAll('.reading-panel').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(`reading-${tab}`).classList.remove('hidden');
+      event.target.classList.add('active');
+    }
+
+    function checkReading() {
+      const answers = {
+        r1: document.getElementById('r1').value,
+        r2: document.getElementById('r2').value,
+        r3: document.getElementById('r3').value,
+      };
+      const correct = { r1: '15', r2: 'natur', r3: 'wettbewerb' };
+      let score = 0;
+      const feedback = [];
+      Object.keys(correct).forEach(key => {
+        if (answers[key] === correct[key]) {
+          score++;
+          feedback.push(`✅ ${key.toUpperCase()} helyes`);
+        } else {
+          feedback.push(`❌ ${key.toUpperCase()} még nem jó`);
         }
-        
-        function switchLang() {
-            // Dummy – a toggleLanguage-t használjuk
-        }
+      });
+      const percent = Math.round((score / 3) * 100);
+      document.getElementById('reading-result').innerHTML = `
+        <p class="text-lg font-semibold mb-2">Eredmény: ${score}/3</p>
+        <p class="mb-3">${feedback.join('<br>')}</p>
+        <p>${score === 3 ? 'Nagyon szép munka, ez erős olvasásértési teljesítmény.' : score === 2 ? 'Jó eredmény, még egy kis figyelemmel könnyen meglesz a 3/3.' : 'Érdemes újra elolvasni a szöveget és kulcsszavakat keresni.'}</p>
+      `;
+      document.getElementById('stat-reading').textContent = `${percent}%`;
+      document.getElementById('stat-reading-bar').style.width = `${percent}%`;
+      document.getElementById('reading-goal-bar').style.width = `${percent}%`;
+      document.getElementById('study-tip').textContent = score >= 2 ? 'Szép haladás. Most válassz egy hivatalos modellsatzot időre.' : 'Olvasd újra a mintaszöveget, és jelöld benne a kulcsinformációkat.';
+      document.getElementById('reading-feedback').classList.remove('hidden');
+      document.getElementById('reading-text').classList.add('hidden');
+      document.getElementById('reading-tasks').classList.add('hidden');
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      updateStats();
+    }
 
-        const translations = {
-            'hero-title': {
-                hu: "Készülj fel sikeresen a DSD I vizsgára!",
-                de: "Bereite dich erfolgreich auf die DSD I Prüfung vor!"
-            },
-            'hero-subtitle': {
-                hu: "Interaktív gyakorlás magyar és német nyelven. Olvasás, hallásértés, írás és beszédkészség fejlesztése.",
-                de: "Interaktives Üben auf Ungarisch und Deutsch. Lesen, Hören, Schreiben und Sprechen."
-            },
-            'start-btn': {
-                hu: "Kezdjem a gyakorlást",
-                de: "Jetzt üben"
-            },
-            // További kulcsok...
-        };
+    function resetReading() {
+      ['r1','r2','r3'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('reading-result').textContent = 'Töltsd ki a feladatot, majd kattints az ellenőrzésre.';
+      document.getElementById('stat-reading').textContent = '0%';
+      document.getElementById('stat-reading-bar').style.width = '0%';
+      document.getElementById('reading-goal-bar').style.width = '0%';
+      document.getElementById('study-tip').textContent = 'Kezdd a mini kvízzel, majd oldd meg az olvasási feladatot.';
+      document.querySelectorAll('.reading-panel').forEach(el => el.classList.add('hidden'));
+      document.getElementById('reading-text').classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
+      updateStats();
+    }
 
-        function updateTexts() {
-            // Egyszerű példa – bővíthető
-            console.log('Nyelv váltva: ' + currentLang);
-        }
+    function updateStats() {
+      const quizPercent = Math.round((quizScore / quizData.length) * 100);
+      document.getElementById('stat-quiz').textContent = `${quizPercent}%`;
+      document.getElementById('stat-quiz-bar').style.width = `${quizPercent}%`;
+    }
 
-        // Modellsätze adatok
-        const modelSets = [
-            {nr: 1, pdf: "https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_1/download_modellsatz.pdf?__blob=publicationFile&v=3"},
-            {nr: 2, pdf: "https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_2/download_modellsatz.pdf?__blob=publicationFile&v=2"},
-            {nr: 3, pdf: "https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_3/download_modellsatz.pdf?__blob=publicationFile&v=2"},
-            {nr: 6, pdf: "https://www.auslandsschulwesen.de/SharedDocs/Downloads/DE/DSD/DSDI/Modellsaetze/A2-B1_6/download_modellsatz.pdf?__blob=publicationFile&v=2"},
-        ];
-
-        function populateModels() {
-            const tbody = document.getElementById('model-table');
-            tbody.innerHTML = '';
-            
-            modelSets.forEach(set => {
-                const tr = document.createElement('tr');
-                tr.className = 'border-b hover:bg-gray-50 transition-colors';
-                tr.innerHTML = `
-                    <td class="py-5 font-medium">Modellsatz Nr. ${set.nr}</td>
-                    <td class="py-5">
-                        <a href="${set.pdf}" target="_blank" 
-                           class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-download"></i> PDF
-                        </a>
-                    </td>
-                    <td class="py-5 text-gray-400 text-sm">Hivatalos audiók a ZfA oldalon</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function startReadingPractice() {
-            alert('📖 Olvasás gyakorlás indítása...\n\nPélda feladat (valós oldalon interaktív lenne):\n\nText: „Hallo, ich heiße Anna...“\n\n1. Wie heißt das Mädchen?');
-        }
-
-        // Inicializálás
-        window.onload = function() {
-            populateModels();
-            console.log('%cDSD Gyakorlóoldal betöltve ✅', 'color: #003087; font-size: 16px; font-weight: bold');
-        };
-    </script>
+    window.onload = function() {
+      populateModels();
+      renderQuiz();
+    }
+  </script>
 </body>
 </html>
